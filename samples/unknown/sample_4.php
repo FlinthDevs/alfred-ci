@@ -1,7 +1,4 @@
 <?php
-
-public function execute()
-    {
         $toRedirect = $this->urlFilteringHelper->getTireCategoryUrl();
         $toRemove = IdentificationHelper::TIRE;
         if ($this->getRequest()->getParam('is_from_tire_category') != 1) {
@@ -18,4 +15,4 @@ public function execute()
         }
         $this->identificationHelper->removeIdentificationLevel($toRemove);
         $this->_redirect($toRedirect);
-    }
+

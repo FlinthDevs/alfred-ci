@@ -1,7 +1,4 @@
 <?php
-
-public function execute()
-    {
         if ($this->getRequest()->isAjax()) {
             $optionsSku = $this->getRequest()->getParam('optionsSku');
             $sessionPrices = $this->catalogHelper->getCatalogSession()->getWheelsPackPrices();
@@ -40,4 +37,3 @@ public function execute()
                 ]
             );
         }
-    }

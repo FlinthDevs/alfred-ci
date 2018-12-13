@@ -1,62 +1,5 @@
 <?php
 
-namespace Drupal\vdg_block_contact\Plugin\ExtraField\Display;
-
-use Drupal\Core\Entity\ContentEntityInterface;
-use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
-use Drupal\extra_field\Plugin\ExtraFieldDisplayBase;
-use Drupal\vdg_core\Utility\EntityFieldHelperInterface;
-use Symfony\Component\DependencyInjection\ContainerInterface;
-
-/**
- * Title block.
- *
- * @ExtraFieldDisplay(
- *   id = "title_contact",
- *   label = @Translation("Title contact (VDG)"),
- *   bundles = {
- *     "block_content.contacts",
- *   }
- * )
- */
-class TitleContact extends ExtraFieldDisplayBase implements ContainerFactoryPluginInterface {
-
-  /**
-   * The entity field helper service.
-   *
-   * @var \Drupal\vdg_core\Utility\EntityFieldHelperInterface
-   */
-  protected $entityFieldHelper;
-
-  /**
-   * {@inheritdoc}
-   */
-  public function __construct(
-    array $configuration,
-    $plugin_id,
-    $plugin_definition,
-    EntityFieldHelperInterface $entity_field_helper
-  ) {
-    parent::__construct($configuration, $plugin_id, $plugin_definition);
-    $this->entityFieldHelper = $entity_field_helper;
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition) {
-    return new static(
-      $configuration,
-      $plugin_id,
-      $plugin_definition,
-      $container->get('vdg_core.utility.entity_field_helper')
-    );
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function view(ContentEntityInterface $entity) {
     $title = $this->entityFieldHelper->getvalue($entity, 'field_title');
     $service = $this->entityFieldHelper->getReferencedEntity($entity, 'field_service');
 
@@ -90,6 +33,3 @@ class TitleContact extends ExtraFieldDisplayBase implements ContainerFactoryPlug
     ];
 
     return $elements;
-  }
-
-}

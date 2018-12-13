@@ -1,77 +1,6 @@
 <?php
 
-/**
- * @file
- * Contains hook implementations for vdg_views module.
- */
-
-use Drupal\Core\Form\FormStateInterface;
-use Drupal\Core\Template\Attribute;
-
-/**
- * Implements hook_theme().
- */
-function vdg_views_theme($existing, $type, $theme, $path) {
-  return [
-    'vdg_media_file_type_picto' => [
-      'variables' => [
-        'file_extension' => '',
-      ],
-    ],
-    'vdg_search_did_you_mean' => [
-      'variables' => [
-        'suggestion' => '',
-      ],
-    ],
-    'vdg_views_facets_diary_page' => [
-      'variables' => [
-        'facet_zoom_on' => [],
-        'facet_for_who' => [],
-        'facet_when' => [],
-        'facet_what' => [],
-        'facet_where' => [],
-      ],
-    ],
-  ];
-}
-
-/**
- * Prepares variables for views RSS item templates.
- *
- * Default template: views-view-row-rss.html.twig.
- *
- * @param array $variables
- *   An associative array containing:
- *   - row: The raw results rows.
- */
-function vdg_views_preprocess_views_view_row_rss(array &$variables) {
-  $item = $variables['row'];
-
-  $variables['item_elements'] = [];
-  foreach ($item->elements as $element) {
-
-    // Remove the native creator data.
-    if ($element['key'] == 'dc:creator') {
-      continue;
-    }
-    // Alter the guid native data.
-    elseif ($element['key'] == 'guid') {
-      $element['attributes'] = [];
-    }
-
-    // Get dynamical item attributes to set.
-    if (isset($element['attributes']) && is_array($element['attributes'])) {
-      $element['attributes'] = new Attribute($element['attributes']);
-    }
-    $variables['item_elements'][] = $element;
-  }
-}
-
-/**
- * Implements hook_form_alter().
- */
-function vdg_views_form_alter(&$form, FormStateInterface $form_state, $form_id) {
-  if ($form_id == 'views_exposed_form') {
+if ($form_id == 'views_exposed_form') {
     switch ($form['#id']) {
       case 'views-exposed-form-directory-page-directory-search':
         // Display label of search_api_fulltext as form title.
@@ -120,29 +49,3 @@ function vdg_views_form_alter(&$form, FormStateInterface $form_state, $form_id) 
         break;
     }
   }
-}
-
-/**
- * Implements hook_search_api_autocomplete_suggestions_alter().
- */
-function vdg_views_search_api_autocomplete_suggestions_alter(array &$suggestions, array $alter_params) {
-
-  $views_list = [
-    'search_procedure_form',
-    'search_page',
-  ];
-
-  if (in_array($alter_params['search']->id(), $views_list)) {
-
-    /** @var \Drupal\search_api_autocomplete\Suggestion\Suggestion $suggestion */
-    foreach ($suggestions as $key => &$suggestion) {
-      $options = $suggestion->getUrl()->getOptions();
-      $node = $options['entity'];
-
-      // Turn off url so that value becomes suggested key, rather than label.
-      $suggestion->setSuggestedKeys($node->label());
-      // Otherwise, the output of the label is used as the value.
-      $suggestion->setUrl(NULL);
-    }
-  }
-}

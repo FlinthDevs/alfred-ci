@@ -1,7 +1,4 @@
 <?php
-
-public function getPriceOptionsByProduct()
-    {
         $price = 0;
         $optionCollection = $this->catalogHelper->getProductOptionCollection();
         $optionCollection->addAttributeToFilter('option_incluse', 1);
@@ -10,4 +7,3 @@ public function getPriceOptionsByProduct()
         }
 
         return $price;
-    }

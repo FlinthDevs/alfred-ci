@@ -1,6 +1,4 @@
 <?php
-public function getDynamicBundleOptions(ItemInterface $item)
-    {
         $options = [];
         $bundleDynamicOpt = $item->getOptionByCode('bundle_dynamic_selection');
         if ($bundleDynamicOpt) {
@@ -34,4 +32,3 @@ public function getDynamicBundleOptions(ItemInterface $item)
         }
 
         return $options;
-    }

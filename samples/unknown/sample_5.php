@@ -1,6 +1,4 @@
 <?php
-public function updateExecutionTime($data)
-    {
         $offerInSession = $this->customerSession->getData('offer');
         if (isset($data['braking'])) {
             if (isset($offerInSession['braking'])) {
@@ -13,4 +11,3 @@ public function updateExecutionTime($data)
             }
         }
         return $data;
-    }

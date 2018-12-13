@@ -1,6 +1,4 @@
 <?php
-public function getList(SearchCriteriaInterface $criteria)
-    {
         $searchResults = $this->searchResultsFactory->create();
         $searchResults->setSearchCriteria($criteria);
 
@@ -16,4 +14,3 @@ public function getList(SearchCriteriaInterface $criteria)
         $searchResults->setItems($collection->getItems());
 
         return $searchResults;
-    }

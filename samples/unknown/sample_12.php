@@ -1,66 +1,5 @@
 <?php
 
-namespace Drupal\vdg_block_contact\Plugin\ExtraField\Display;
-
-use Drupal\Core\Cache\CacheableMetadata;
-use Drupal\Core\Entity\ContentEntityInterface;
-use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
-use Drupal\extra_field\Plugin\ExtraFieldDisplayBase;
-use Drupal\vdg_core\Utility\EntityFieldHelperInterface;
-use Symfony\Component\DependencyInjection\ContainerInterface;
-use Drupal\Core\Url;
-
-/**
- * Title block.
- *
- * @ExtraFieldDisplay(
- *   id = "vcard_contact",
- *   label = @Translation("vCard contact (VDG)"),
- *   bundles = {
- *     "block_content.contacts",
- *     "node.directory_detail",
- *     "node.cm_member",
- *   }
- * )
- */
-class VCardLink extends ExtraFieldDisplayBase implements ContainerFactoryPluginInterface {
-
-  /**
-   * The entity field helper service.
-   *
-   * @var \Drupal\vdg_core\Utility\EntityFieldHelperInterface
-   */
-  protected $entityFieldHelper;
-
-  /**
-   * {@inheritdoc}
-   */
-  public function __construct(
-    array $configuration,
-    $plugin_id,
-    $plugin_definition,
-    EntityFieldHelperInterface $entity_field_helper
-  ) {
-    parent::__construct($configuration, $plugin_id, $plugin_definition);
-    $this->entityFieldHelper = $entity_field_helper;
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition) {
-    return new static(
-      $configuration,
-      $plugin_id,
-      $plugin_definition,
-      $container->get('vdg_core.utility.entity_field_helper')
-    );
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function view(ContentEntityInterface $entity) {
     $cache = new CacheableMetadata();
     $cache->addCacheableDependency($entity);
     if ($entity->bundle() == 'cm_member') {
@@ -108,6 +47,3 @@ class VCardLink extends ExtraFieldDisplayBase implements ContainerFactoryPluginI
     $cache->applyTo($elements);
 
     return $elements;
-  }
-
-}

@@ -1,6 +1,4 @@
 <?php
-public function getRevisionBudget()
-    {
         $result = '';
 
         try {
@@ -11,4 +9,3 @@ public function getRevisionBudget()
         }
 
         return $result;
-    }

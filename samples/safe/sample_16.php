@@ -1,38 +1,6 @@
 <?php
 
-/**
- * @file
- * Contains hook implementations for vdg_metatag module.
- */
-
-use Drupal\Component\Utility\Unicode;
-use Drupal\Core\Render\BubbleableMetadata;
-use Drupal\image\Entity\ImageStyle;
-
-/**
- * Implements hook_token_info().
- */
-function vdg_metatag_token_info() {
-  $info['tokens']['node']['trim'] = [
-    'name' => t('Trim node token'),
-    'description' => t('Returns following token(s) trimmed by given length'),
-  ];
-  $info['tokens']['node']['meta_image'] = [
-    'name' => t('Metatag image node token'),
-    'description' => t('Returns url of teaser image or logo'),
-  ];
-  $info['tokens']['current-page']['view_description'] = [
-    'name' => t('Metatag views description'),
-    'description' => t('Returns the description of the views configure in config page'),
-  ];
-  return $info;
-}
-
-/**
- * Implements hook_tokens().
- */
-function vdg_metatag_tokens(string $type, array $tokens, array $data, array $options, BubbleableMetadata $bubbleable_metadata) {
-  $replacements = [];
+$replacements = [];
 
   if (($type == 'node')) {
     foreach ($tokens as $name => $original) {
@@ -121,4 +89,3 @@ function vdg_metatag_tokens(string $type, array $tokens, array $data, array $opt
   }
 
   return $replacements;
-}

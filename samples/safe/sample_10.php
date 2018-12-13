@@ -1,6 +1,4 @@
 <?php
-protected function applyFilter(\Magento\Framework\App\RequestInterface $request, $filters)
-    {
         $filterParams = $this->urlFilteringHelper->getFilterArray();
 
         foreach ($filterParams as $index => $attrName) {
@@ -73,4 +71,3 @@ protected function applyFilter(\Magento\Framework\App\RequestInterface $request,
                 }
             }
         }
-    }

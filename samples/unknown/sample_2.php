@@ -1,7 +1,4 @@
 <?php
-
-public function execute()
-    {
         if ($this->getRequest()->isAjax()) {
             $sku = $this->getRequest()->getParam('skuTire');
             $this->catalogHelper->getCatalogSession()->setWheelsPackTire($sku);
@@ -41,4 +38,3 @@ public function execute()
                 ]
             );
         }
-    }

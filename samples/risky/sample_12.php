@@ -1,88 +1,6 @@
 <?php
 
-namespace Drupal\vdg_cover_image\Plugin\Block;
-
-use Drupal\Component\Utility\UrlHelper;
-use Drupal\Core\Block\BlockBase;
-use Drupal\Core\Cache\CacheableMetadata;
-use Drupal\Core\Link;
-use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
-use Drupal\Core\Url;
-use Drupal\node\NodeInterface;
-use Drupal\vdg_core\Utility\EntityFieldHelperInterface;
-use Symfony\Component\DependencyInjection\ContainerInterface;
-use Symfony\Component\HttpFoundation\RequestStack;
-
-/**
- * Provides a cover image block.
- *
- * @Block(
- *  id = "vdg_cover_image_block",
- *  admin_label = @Translation("Cover Image"),
- * )
- */
-class VdgCoverImageBlock extends BlockBase implements ContainerFactoryPluginInterface {
-
-  /**
-   * The content entity helper.
-   *
-   * @var \Drupal\vdg_core\Utility\EntityFieldHelperInterface
-   */
-  protected $contentEntityHelper;
-
-  /**
-   * The current request service.
-   *
-   * @var \Symfony\Component\HttpFoundation\Request
-   */
-  protected $currentRequest;
-
-  /**
-   * Constructs of VdgHeaderSearchBlock.
-   *
-   * @param array $configuration
-   *   A configuration array containing information about the plugin instance.
-   * @param string $plugin_id
-   *   The plugin_id for the plugin instance.
-   * @param string $plugin_definition
-   *   The plugin implementation definition.
-   * @param \Drupal\vdg_core\Utility\EntityFieldHelperInterface $content_entity
-   *   The content entity helper.
-   * @param \Symfony\Component\HttpFoundation\RequestStack $request_stack
-   *   The request stack service.
-   */
-  public function __construct(
-    array $configuration,
-    $plugin_id,
-    $plugin_definition,
-    EntityFieldHelperInterface $content_entity,
-    RequestStack $request_stack
-  ) {
-    parent::__construct($configuration, $plugin_id, $plugin_definition);
-    $this->contentEntityHelper = $content_entity;
-    $this->currentRequest = $request_stack->getCurrentRequest();
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition) {
-    return new static(
-      $configuration,
-      $plugin_id,
-      $plugin_definition,
-      $container->get('vdg_core.utility.entity_field_helper'),
-      $container->get('request_stack')
-    );
-  }
-
-  /**
-   * {@inheritdoc}
-   *
-   * @SuppressWarnings(PHPMD.CyclomaticComplexity)
-   */
-  public function build() {
-    $content = [];
+$content = [];
     $cache = new CacheableMetadata();
     $current_node = $this->currentRequest->attributes->get('node');
 
@@ -167,6 +85,4 @@ class VdgCoverImageBlock extends BlockBase implements ContainerFactoryPluginInte
     $cache->applyTo($content);
 
     return $content;
-  }
 
-}

@@ -1,15 +1,6 @@
 <?php
 
-/**
- * @file
- * Contains hook implementations for vdg_content_information_folder module.
- */
-
-/**
- * Implements hook_preprocess_page().
- */
-function vdg_content_information_folder_preprocess_page(&$variables) {
-  if (isset($variables['node'])) {
+if (isset($variables['node'])) {
     /** @var \Drupal\node\Entity\Node $node */
     $node = $variables['node'];
 
@@ -25,4 +16,4 @@ function vdg_content_information_folder_preprocess_page(&$variables) {
       }
     }
   }
-}
+

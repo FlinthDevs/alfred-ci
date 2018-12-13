@@ -1,6 +1,5 @@
 <?php
-protected function createPaths($values)
-    {
+
         $requestPath = '';
         $paths = [];
 
@@ -13,4 +12,3 @@ protected function createPaths($values)
         }
 
         return $paths;
-    }

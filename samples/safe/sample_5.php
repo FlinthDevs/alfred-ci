@@ -1,6 +1,4 @@
 <?php
-public function getList(\Magento\Framework\Api\SearchCriteriaInterface $searchCriteria)
-    {
         $searchResults = $this->searchResultFactory->create();
         $searchResults->setSearchCriteria($searchCriteria);
 
@@ -32,4 +30,3 @@ public function getList(\Magento\Framework\Api\SearchCriteriaInterface $searchCr
         $searchResults->setItems($collection->getItems());
 
         return $searchResults;
-    }

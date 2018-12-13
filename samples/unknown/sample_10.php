@@ -1,6 +1,4 @@
 <?php
-public function getMarkers()
-    {
         $collection = $this->getRetailerCollection();
         $cacheKey = sprintf("%s_%s_%s", 'smile_storelocator_search', $collection->getStoreId(), serialize($this->getCity()));
         $markers = $this->cacheInterface->load($cacheKey);
@@ -48,4 +46,3 @@ public function getMarkers()
         }
 
         return $this->serializer->unserialize($markers);
-    }

@@ -1,6 +1,4 @@
 <?php
-public function getRevisionConstructor()
-    {
         $result = '';
 
         try {
@@ -11,4 +9,3 @@ public function getRevisionConstructor()
         }
 
         return $result;
-    }
