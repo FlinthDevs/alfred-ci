@@ -11,7 +11,6 @@ $content = [];
 
       $current_node = $this->currentRequest->attributes->get('node');
 
-      // Case: Previews page.
       if (empty($current_node)) {
         $current_node = $this->currentRequest->attributes->get('node_preview');
       }

@@ -35,7 +35,6 @@
 
             if ($this->getRequest()->getParam('mobile_registration')) {
                 if ($vehicleData['ktype']) {
-                    // Get vehicle ktype to set value in identification page
                     $kTypes[$vehicleData['ktype']->getEnergy()][] =
                         $this->vehicleHelper->formatKtypeForIdentification($vehicleData['ktype']);
 

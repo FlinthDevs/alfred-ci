@@ -4,8 +4,6 @@ $node = $variables['node'];
 
   if ($node->bundle() == 'product') {
     if ($variables['view_mode'] == 'full') {
-      // Get advice block.
-      // Load Instance of custom block with variables.
       $block_id = Settings::get('pomona_product_type_advice_returned');
 
       $product_block = \Drupal::entityTypeManager()
@@ -18,18 +16,15 @@ $node = $variables['node'];
           ->view($product_block);
 
         if ($product_block_content) {
-          // Add block content to build array.
           $variables['product_advice_block_output'] = $product_block_content;
         }
       }
 
-      // Generate the url to contact page.
       $variables['contact_request'] = Url::fromRoute(
         'entity.webform.canonical',
         ['webform' => 'contact'],
         ['query' => ['categories' => 'produit', 'q' => $node->id()]])->toString();
 
-      // Get Json.
       if ($node->hasField('field_json')) {
         $json_text = $node->get('field_json')->getValue();
 
@@ -39,11 +34,9 @@ $node = $variables['node'];
           $json = Json::decode($json_text);
           $json_base = $json['result'][0];
 
-          // Get Updated date.
           if (!empty($json_base['dateDerniereMiseAJour'])) {
             $variables['updatedDate'] = $json_base['dateDerniereMiseAJour'];
           }
-          // Get ficheInfoAchat info.
           if (!empty($json_base['ficheInfoAchat'])) {
             if (!empty($variables['ficheInfoAchat'])) {
               $variables['ficheInfoAchat'] = array_merge($variables['ficheInfoAchat'], $json_base['ficheInfoAchat']);
@@ -53,7 +46,6 @@ $node = $variables['node'];
             }
           }
 
-          // Get allergenes info.
           if (!empty($json_base['allergenes'])) {
             $allergenes_description = '';
             foreach ($json_base['allergenes'] as $key => $allergenes) {
@@ -70,12 +62,10 @@ $node = $variables['node'];
             $variables['ficheInfoAchat']['allergenes'] = $allergenes_description;
           }
 
-          // Get denominationReglementaire info.
           if (!empty($json_base['denominationReglementaire'])) {
             $variables['ficheInfoAchat']['denominationReglementaire'] = $json_base['denominationReglementaire'];
           }
 
-          // Get ficheInfoAchat info.
           if (!empty($json_base['ficheInfoAchat']['gemrcn1']['frequence']['code'])) {
 
             $frenquence_code_url = file_create_url(
@@ -96,12 +86,10 @@ $node = $variables['node'];
             $variables['conseilsMiseEnOeuvre'] = $conseilsMiseEnOeuvre;
           }
 
-          // Get centPctMaRegion info.
           if (!empty($json_base['centPctMaRegion'])) {
             $variables['centPctMaRegion'] = $json_base['centPctMaRegion']['designation'];
           }
 
-          // Get atouts info.
           if (!empty($json_base['atouts'])) {
             $atouts_description = '';
             foreach ($json_base['atouts'] as $atout) {
@@ -110,19 +98,14 @@ $node = $variables['node'];
             $variables['atouts'] = $atouts_description;
           }
 
-          // Get pleasure block.
           if (!empty($json_base['plusPlaisir'])) {
             $variables['pleasure_block'] = $json_base['plusPlaisir'];
           }
         }
       }
 
-      // Start query.
-      // Interrogate the elk.
-      /** @var \Drupal\pomona_search\Service\SearchRecipeHelperInterface $searchRecipeService */
       $searchRecipeService = \Drupal::service('pomona_search.search_recipe_helper');
 
-      /** @var \Drupal\pomona_common\Service\NodeHelperInterface $recipeService */
       $nodeService = \Drupal::service('pomona_common.node_helper');
 
       $current_product_code = $node->get('field_product_code')->getValue();
@@ -207,21 +190,18 @@ $node = $variables['node'];
 
       $variables['thematic_nid'] = $current_product_code_id;
 
-      // Get Family.
       if ($node->hasField('field_product_family')) {
         $parent_family_tid = $node->get('field_product_family')->getValue();
 
         if ($parent_family_tid) {
           $parent_family = Term::load($parent_family_tid[0]['target_id']);
 
-          // Get it's slideshow.
           $variables['family_product_slideshow'] = \Drupal::entityTypeManager()
             ->getViewBuilder('taxonomy_term')
             ->view($parent_family, 'products_slideshow');
         }
       }
 
-      // Get recipe video.
       if ($node->hasField('field_media_video')) {
         $recipe_video_fid = $node->get('field_media_video')->getValue();
 
@@ -229,10 +209,8 @@ $node = $variables['node'];
           $recipe_video_fid = $recipe_video_fid[0]['target_id'];
 
           if (!empty($recipe_video_fid)) {
-            /** @var \Drupal\Core\Render\RendererInterface $renderer */
             $renderer = \Drupal::service('renderer');
 
-            /** @var \Drupal\media\Entity\Media $recipe_video */
             $recipe_video = Media::load($recipe_video_fid);
 
             // Body of modal.
@@ -279,7 +257,6 @@ $node = $variables['node'];
         }
       }
 
-      // Visual slider.
       $setting = [];
       $setting['selector'] = '#slider-product-' . $node->id();
       $setting['prev'] = '#slick-prev-product-' . $node->id();
@@ -306,7 +283,6 @@ $node = $variables['node'];
       $variables['#attached']['library'][] = 'pomona_sticky/sticky';
     }
 
-    // Get product card url.
     if ($node->hasField('field_technical_sheet')) {
       $product_card = $node->get('field_technical_sheet')->getValue();
 
@@ -331,7 +307,6 @@ $node = $variables['node'];
       }
     }
 
-    // Get Json / affichageWeb.
     if ($node->hasField('field_json')) {
       $json_text = $node->get('field_json')->getValue();
 
@@ -346,7 +321,6 @@ $node = $variables['node'];
         $variables['affichageWeb'] = $json_base['marqueCommerciale']['affichageWeb'];
       }
     }
-    // Get brand.
     if ($node->hasField('field_brand')
       && !empty($variables['affichageWeb'])
       && $variables['affichageWeb']) {
@@ -396,7 +370,6 @@ $node = $variables['node'];
       }
     }
 
-    // Get region.
     if ($node->hasField('field_area')) {
       $area_tid = $node->get('field_area')->getValue();
 
@@ -413,7 +386,6 @@ $node = $variables['node'];
       }
     }
 
-    // Get label.
     if ($node->hasField('field_product_label')) {
       $labels = $node->get('field_product_label')->referencedEntities();
 
@@ -443,7 +415,6 @@ $node = $variables['node'];
       }
     }
 
-    // In favorite products page in customer space.
     if (\Drupal::request()->get('_route') == 'pomona_customer_space.favorites_products') {
       $variables['in_favorites'] = TRUE;
     }
@@ -451,7 +422,6 @@ $node = $variables['node'];
       $variables['in_favorites'] = FALSE;
     }
 
-    // Add product code into Twig variables.
     $variables['pomona_id'] = '';
     if ($node->hasField('field_product_code')) {
       $pomona_id = $node->get('field_product_code')->getValue();
@@ -461,7 +431,6 @@ $node = $variables['node'];
     }
   }
 
-  // Check if product is new.
   if ($node->hasField('field_new')) {
     $is_new = $node->get('field_new')->getValue();
 
@@ -470,7 +439,6 @@ $node = $variables['node'];
     }
   }
 
-  // Get the last advice who use the actual product.
   $advice_nids = \Drupal::entityTypeManager()
     ->getStorage('node')
     ->getQuery()

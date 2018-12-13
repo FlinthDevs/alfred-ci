@@ -25,7 +25,6 @@ $content = [];
           // Get credit information.
           $credits = $this->contentEntityHelper->getvalue($media, 'field_media_credits');
 
-          // Convert the credit into link if a URL is provided.
           if (UrlHelper::isValid($credits, TRUE)) {
             $credits_host = parse_url($credits, PHP_URL_HOST);
             $credits = Link::fromTextAndUrl($credits_host, Url::fromUri($credits, ['attributes' => ['class' => ['lien']]]))->toString();

@@ -1,6 +1,5 @@
 <?php
 
-    /** @var \Drupal\Core\Entity\ContentEntityInterface $entity */
     $entity = $item->getOriginalObject()->getValue();
 
     if ($entity->getEntityTypeId() == 'node') {

@@ -1,6 +1,5 @@
 <?php
 
-    /** @var \Drupal\Core\Cache\CacheableMetadata $cache */
     $cache = new CacheableMetadata();
     $build = [];
 

@@ -75,7 +75,6 @@ $node = $variables['node'];
             $variables['ficheInfoAchat']['denominationReglementaire'] = $json_base['denominationReglementaire'];
           }
 
-          // Get ficheInfoAchat info.
           if (!empty($json_base['ficheInfoAchat']['gemrcn1']['frequence']['code'])) {
 
             $frenquence_code_url = file_create_url(
@@ -86,7 +85,6 @@ $node = $variables['node'];
             $variables['frequence_code'] = $frenquence_code_url;
           }
 
-          // Get conseilsMiseEnOeuvre info.
           if (!empty($json_base['conseilsMiseEnOeuvre'])) {
 
             $conseilsMiseEnOeuvre = '';
@@ -96,12 +94,10 @@ $node = $variables['node'];
             $variables['conseilsMiseEnOeuvre'] = $conseilsMiseEnOeuvre;
           }
 
-          // Get centPctMaRegion info.
           if (!empty($json_base['centPctMaRegion'])) {
             $variables['centPctMaRegion'] = $json_base['centPctMaRegion']['designation'];
           }
 
-          // Get atouts info.
           if (!empty($json_base['atouts'])) {
             $atouts_description = '';
             foreach ($json_base['atouts'] as $atout) {
@@ -110,19 +106,14 @@ $node = $variables['node'];
             $variables['atouts'] = $atouts_description;
           }
 
-          // Get pleasure block.
           if (!empty($json_base['plusPlaisir'])) {
             $variables['pleasure_block'] = $json_base['plusPlaisir'];
           }
         }
       }
 
-      // Start query.
-      // Interrogate the elk.
-      /** @var \Drupal\pomona_search\Service\SearchRecipeHelperInterface $searchRecipeService */
       $searchRecipeService = \Drupal::service('pomona_search.search_recipe_helper');
 
-      /** @var \Drupal\pomona_common\Service\NodeHelperInterface $recipeService */
       $nodeService = \Drupal::service('pomona_common.node_helper');
 
       $current_product_code = $node->get('field_product_code')->getValue();
@@ -207,7 +198,6 @@ $node = $variables['node'];
 
       $variables['thematic_nid'] = $current_product_code_id;
 
-      // Get Family.
       if ($node->hasField('field_product_family')) {
         $parent_family_tid = $node->get('field_product_family')->getValue();
 

@@ -6,7 +6,6 @@
     $cache = new CacheableMetadata();
     $cache->addCacheableDependency($entity);
 
-    /** @var \Drupal\menu_link_content\Entity\MenuLinkContent $menu_link */
     $menu_link = $this->entityFieldHelper->getReferencedEntity($entity, 'field_menu');
 
     if (!empty($menu_link)) {
@@ -20,7 +19,6 @@
 
       $parameters->setMaxDepth(1);
 
-      // Load the tree based on this set of parameters.
       $tree = $this->menuTree->load($menu_link->getMenuName(), $parameters);
       $manipulators = [
         ['callable' => 'menu.default_tree_manipulators:checkAccess'],
