@@ -1,88 +1,67 @@
 <?php
 
-$content = [];
-    $cache = new CacheableMetadata();
-    $current_node = $this->currentRequest->attributes->get('node');
+// In any case redirect to the implantations page.
+$url = Url::fromRoute('view.implantation_list.implantation_page');
+$form_state->setRedirectUrl($url);
 
-    // Case: Previews page.
-    if (empty($current_node)) {
-      $current_node = $this->currentRequest->attributes->get('node_preview');
+try {
+  $postal_code = $form_state->getValue('postal_code');
+  $http_client_options = [
+    'base_uri' => Settings::get('pomona_grace_url'),
+    'headers' => [
+      'Content-type' => 'application/json',
+    ],
+  ];
+  $path = '/grace/referentiel/kilivki/' . Settings::get('pomona_grace_kilivki_branch_code') . '/' . $postal_code . '/FR';
+
+  $result = $this->httpClient->get($path, $http_client_options);
+  $response_content = $result->getBody()->getContents();
+  $response_content = Json::decode($response_content);
+  $city_count = count($response_content);
+  // Check multiple or single city.
+  if ($city_count == 1) {
+    $nids = [];
+
+    // Check if node exists.
+    if (isset($response_content[0]['agences'][0]['code_agence'])) {
+      $implantation_code = $response_content[0]['agences'][0]['code_agence'];
+
+      $query = $this->entityTypeManager->getStorage('node')->getQuery()
+        ->condition('type', 'implantation')
+        ->condition('field_implantation_code', $implantation_code)
+        ->condition('status', NodeInterface::PUBLISHED)
+        ->sort('created', 'DESC')
+        ->range(0, 1);
+      $nids = $query->execute();
     }
 
-    if (is_object($current_node) && $current_node instanceof NodeInterface && in_array($current_node->getType(), ['place_page', 'section_page'])) {
-      $media = $this->contentEntityHelper->getReferencedEntity($current_node, 'field_cover');
-
-      if (!empty($media)) {
-        /** @var \Drupal\media\Entity\Media $media */
-        $cache->addCacheableDependency($media);
-
-        /** @var \Drupal\file\Entity\File $image */
-        $image = $this->contentEntityHelper->getReferencedEntity($media, 'field_media_image');
-        if (!empty($image)) {
-          $cache->addCacheableDependency($image);
-          $image_url = file_url_transform_relative($image->url());
-
-          // Get credit information.
-          $credits = $this->contentEntityHelper->getvalue($media, 'field_media_credits');
-
-          if (UrlHelper::isValid($credits, TRUE)) {
-            $credits_host = parse_url($credits, PHP_URL_HOST);
-            $credits = Link::fromTextAndUrl($credits_host, Url::fromUri($credits, ['attributes' => ['class' => ['lien']]]))->toString();
-          }
-
-          // Get alt text.
-          $alt_text = '';
-          $field_media_image = $media->get('field_media_image');
-
-          if (!empty($field_media_image)) {
-            $field_media_image = $field_media_image[0];
-            $alt_text = $field_media_image->get('alt')->getString();
-          }
-
-          $content = [
-            '#theme' => 'vdg_cover_image_block',
-            '#image_url' => $image_url,
-            '#image_alt' => $alt_text,
-            '#details' => [
-              'image_name' => $this->contentEntityHelper->getvalue($media, 'field_media_title'),
-              'copyright' => $this->contentEntityHelper->getvalue($media, 'field_media_copyright'),
-              'credits' => $credits,
-            ],
-            '#attached' => ['library' => ['vdg_core/display_credits']],
-          ];
-        }
-      }
+    // Redirect to the implantation.
+    if (!empty($nids)) {
+      $nid = array_shift($nids);
+      $url = Url::fromRoute('entity.node.canonical', ['node' => $nid]);
+      $form_state->setRedirectUrl($url);
     }
-    elseif (is_object($current_node) && $current_node instanceof NodeInterface && $current_node->getType() == 'information_folder') {
-      $media = $this->contentEntityHelper->getReferencedEntities($current_node, 'field_cover');
+  }
+  else {
+    $url_options = [
+      'query' => [
+        'cp' => $postal_code,
+      ],
+    ];
+    $url = Url::fromRoute('view.implantation_list.implantation_page', [], $url_options);
+    $form_state->setRedirectUrl($url);
+  }
+}
+catch (ClientException $e) {
+  $response_content = $e->getResponse()->getBody()->getContents();
+  $response_content = Json::decode($response_content);
 
-      if (!empty($media)) {
-        /** @var \Drupal\media\Entity\Media $media */
-        $media = $media[0];
-        $cache->addCacheableDependency($media);
-
-        /** @var \Drupal\file\Entity\File $image */
-        $image = $this->contentEntityHelper->getReferencedEntity($media, 'field_media_image');
-        if (!empty($image)) {
-          $image_url = file_url_transform_relative($image->url());
-          $cache->addCacheableDependency($image);
-
-          $content = [
-            '#theme' => 'image',
-            '#uri' => $image_url,
-            '#attributes' => [
-              'class' => [
-                'image',
-              ],
-            ],
-          ];
-        }
-      }
-    }
-
-    $cache->addCacheContexts(['url.path']);
-    $cache->addCacheableDependency($current_node);
-    $cache->applyTo($content);
-
-    return $content;
-
+  $error = $response_content['error'];
+  $url_options = [
+    'query' => [
+      'error' => $error,
+    ],
+  ];
+  $url = Url::fromRoute('view.implantation_list.implantation_page', [], $url_options);
+  $form_state->setRedirectUrl($url);
+}
